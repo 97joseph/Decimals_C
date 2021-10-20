@@ -1,13 +1,7 @@
-//submit this file only
-#include "decimal.h"
-using namespace std;
-//add your code below
-//see FAQ for what you can/cannot do 
 
 #define _ASSERT(cond) ((!(cond)) ? _assert(#cond,__FILE__,__LINE__) : _noassert())
 
-#include "Decimal.h"
-//System libraries
+#include "BigDecimal.h"
 #include <string.h>
 #include <stdlib.h>
 #include <iostream>
@@ -533,7 +527,7 @@ static std::string _add (const char *lhs, int lsign, int lint, int ldot, int lfr
   return ZERO; //Is dummy...
 }
 
-void Decimal::setscale (int scale) {
+void BigDecimal::setscale (int scale) {
   if (scale < 0) {
     _scale = 0;
   } else {
@@ -541,7 +535,7 @@ void Decimal::setscale (int scale) {
   }
 }
 
-std::string Decimal::divide (const std::string &lhs, const std::string &rhs,int scale) {
+std::string BigDecimal::divide (const std::string &lhs, const std::string &rhs,int scale) {
   if (scale == INT_MIN) {
     scale = _scale;
   }
@@ -572,7 +566,7 @@ std::string Decimal::divide (const std::string &lhs, const std::string &rhs,int 
   return trimTrailingZeros(divide_positive (lhs.c_str(), lint, ldot, lfrac, lscale, rhs.c_str(), rint, rdot, rfrac, rscale, scale, lsign * rsign));
 }
 
-std::string Decimal::modulus (const std::string &lhs, const std::string &rhs,int scale) {
+std::string BigDecimal::modulus (const std::string &lhs, const std::string &rhs,int scale) {
   if (lhs.empty()) {
     return ZERO;
   }
@@ -629,7 +623,7 @@ std::string Decimal::modulus (const std::string &lhs, const std::string &rhs,int
   return std::string(trimTrailingZeros(std::string(buffer + cur_pos).substr(0, 20 - cur_pos)));
 }
 
-std::string Decimal::pow (const std::string &lhs, const std::string &rhs,int scale) {
+std::string BigDecimal::pow (const std::string &lhs, const std::string &rhs,int scale) {
   if (lhs.empty()) {
     return ZERO;
   }
@@ -676,7 +670,7 @@ std::string Decimal::pow (const std::string &lhs, const std::string &rhs,int sca
   return trimTrailingZeros(result);
 }
 
-std::string Decimal::add (const std::string &lhs, const std::string &rhs, int scale) {
+std::string BigDecimal::add (const std::string &lhs, const std::string &rhs, int scale) {
   if (lhs.empty()) {
     return add (ZERO, rhs, scale);
   }
@@ -707,7 +701,7 @@ std::string Decimal::add (const std::string &lhs, const std::string &rhs, int sc
   return trimTrailingZeros(_add (lhs.c_str(), lsign, lint, ldot, lfrac, lscale, rhs.c_str(), rsign, rint, rdot, rfrac, rscale, std::max (lscale, rscale)));
 }
 
-std::string Decimal::subtract (const std::string &lhs, const std::string &rhs, int scale) {
+std::string BigDecimal::subtract (const std::string &lhs, const std::string &rhs, int scale) {
   if (lhs.empty()) {
     return subtract (ZERO, rhs, scale);
   }
@@ -740,7 +734,7 @@ std::string Decimal::subtract (const std::string &lhs, const std::string &rhs, i
   return trimTrailingZeros(_add (lhs.c_str(), lsign, lint, ldot, lfrac, lscale, rhs.c_str(), rsign, rint, rdot, rfrac, rscale, std::max (lscale, rscale)));
 }
 
-std::string Decimal::multiply (const std::string &lhs, const std::string &rhs, int scale) {
+std::string BigDecimal::multiply (const std::string &lhs, const std::string &rhs, int scale) {
   if (lhs.empty()) {
     return multiply (ZERO, rhs, scale);
   }
@@ -771,12 +765,12 @@ std::string Decimal::multiply (const std::string &lhs, const std::string &rhs, i
   return trimTrailingZeros(multiply_positive (lhs.c_str(), lint, ldot, lfrac, lscale, rhs.c_str(), rint, rdot, rfrac, rscale, lscale + rscale, lsign * rsign));
 }
 
-int Decimal::compareTo (const std::string &lhs, const std::string &rhs, int scale) {
+int BigDecimal::compareTo (const std::string &lhs, const std::string &rhs, int scale) {
   if (lhs.empty()) {
-    return Decimal::compareTo (ZERO, rhs, scale);
+    return BigDecimal::compareTo (ZERO, rhs, scale);
   }
   if (rhs.empty()) {
-    return Decimal::compareTo (lhs, ZERO, scale);
+    return BigDecimal::compareTo (lhs, ZERO, scale);
   }
 
   if (scale == INT_MIN) {
@@ -806,9 +800,9 @@ int Decimal::compareTo (const std::string &lhs, const std::string &rhs, int scal
   return (1 - 2 * (lsign < 0)) * _compareTo (lhs.c_str(), lint, ldot, lfrac, lscale, rhs.c_str(), rint, rdot, rfrac, rscale, scale);
 }
 
-std::string Decimal::round (const std::string &lhs, int scale) {
+std::string BigDecimal::round (const std::string &lhs, int scale) {
     if (lhs.empty()) {
-      return Decimal::round (ZERO, scale);
+      return BigDecimal::round (ZERO, scale);
     }
 
     if (scale == INT_MIN) {
@@ -839,15 +833,15 @@ std::string Decimal::round (const std::string &lhs, int scale) {
   return ret;
 }
 
-std::string Decimal::ln(const std::string &lhs, int scale)
+std::string BigDecimal::ln(const std::string &lhs, int scale)
 {
 	
 }
 
-std::string Decimal::log2 (const std::string &lhs, int scale)
+std::string BigDecimal::log2 (const std::string &lhs, int scale)
 {
 	if (lhs.empty()) {
-      return Decimal::round (ZERO, scale);
+      return BigDecimal::round (ZERO, scale);
     }
 
     if (scale == INT_MIN) {
@@ -863,47 +857,60 @@ std::string Decimal::log2 (const std::string &lhs, int scale)
 		std::cerr << "\""<<lhs.c_str()<<"\" Cannot Be A Negative Number"<< std::endl;
     	return "0";
 	}
-	return (Decimal::compareTo(lhs,ONE) > 0)? std::string(Decimal::add(ONE,Decimal::log(Decimal::divide(lhs,TEN)))):ZERO;
+	return (BigDecimal::compareTo(lhs,ONE) > 0)? std::string(BigDecimal::add(ONE,BigDecimal::log(BigDecimal::divide(lhs,TEN)))):ZERO;
 }
 
 std::string fact(std::string a)
 {
 	std::string i("1");
 	std::string fact("1");
-	while(Decimal::compareTo(i,a) <= 0)
+	while(BigDecimal::compareTo(i,a) <= 0)
  	{
- 		fact=Decimal::multiply(fact,to_string(i));
- 		i = Decimal::add(i,ONE);
+ 		fact=BigDecimal::multiply(fact,to_string(i));
+ 		i = BigDecimal::add(i,ONE);
  	}
  	return fact;
 }
 
-string Decimal::sin(const std::string &lhs, int scale)
+//std::string BigDecimal::sin(const std::string &lhs, int scale)
+//{
+//	int i,j;
+//	std::string sum_sin("0");
+//	for(i=0,j=0;i<20;i=i+2,j++)
+// 	{
+// 		std::string p = BigDecimal::divide(BigDecimal::pow(lhs,to_string(i+1)),fact(i+1));
+// 		std::string q = BigDecimal::multiply(power(-1,j),p);
+//		sum_sin = BigDecimal::add(sum_sin,q);
+// 		//sum_sin+=pow(-1,j)*pow(num,i+1)/f(i+1);
+//	}
+//	return sum_sin;
+//}
+std::string BigDecimal::sin(const std::string &lhs, int scale)
 {
 	std::string sum("0"),n,d,t,i("0"),j("0");
-	while(Decimal::compareTo(i,lhs) <= 0)
+	while(BigDecimal::compareTo(i,lhs) <= 0)
 	{
-		if(Decimal::modulus(i,"2") != "0")
+		if(BigDecimal::modulus(i,"2") != "0")
 		{
-			j = Decimal::add(j,ONE);
-			n = Decimal::pow(lhs,i);
+			j = BigDecimal::add(j,ONE);
+			n = BigDecimal::pow(lhs,i);
 			d = fact(i);
-			t = Decimal::divide(n,d);
-			if(Decimal::modulus(j,"2") != "0")
+			t = BigDecimal::divide(n,d);
+			if(BigDecimal::modulus(j,"2") != "0")
 			{
-				sum = Decimal::subtract(sum,t);
+				sum = BigDecimal::subtract(sum,t);
 			}
 			else
 			{
-				sum = Decimal::add(sum,t);
+				sum = BigDecimal::add(sum,t);
 			}
 		}
-	i = Decimal::add(i,ONE);
+	i = BigDecimal::add(i,ONE);
 	}
 	return sum;
 }
 
-std::string Decimal::log (const std::string &lhs, int scale)
+std::string BigDecimal::log (const std::string &lhs, int scale)
 {
 	if (lhs.empty()) {
       return round (ZERO, scale);
@@ -919,10 +926,10 @@ std::string Decimal::log (const std::string &lhs, int scale)
 		std::cerr << "\""<<lhs.c_str()<<"\" Cannot Be A Negative Number"<< std::endl;
     	return _zero(scale);
 	}
-	return std::string(Decimal::divide(Decimal::ln(lhs,0),Decimal::ln(to_string("10"),0),0));
+	return std::string(BigDecimal::divide(BigDecimal::ln(lhs,0),BigDecimal::ln(to_string("10"),0),0));
 }
 
-std::string Decimal::stringToHex(std::string &lhs,int caps)
+std::string BigDecimal::stringToHex(std::string &lhs,int caps)
 {
 	
 	long int i = 1;
@@ -930,8 +937,16 @@ std::string Decimal::stringToHex(std::string &lhs,int caps)
 	lhs = getLeftOfDot(lhs);
 	std::string quotient = lhs,hexoutput("");
 	temp = atoi(modulus(quotient,to_string("16"),0).c_str());
-
-	}
+//	while(compareTo(quotient,ZERO,0) != 0)
+//	{
+//		temp = atoi(modulus(quotient,to_string("16"),0).c_str());
+//		if(temp < 10)
+//			temp = temp + 48;
+//		else
+//			temp = temp + 55;
+//		hexoutput[i++] = temp;
+//		quotient = divide(quotient,to_string("16"),0);
+//	}
 	std::cout<<temp;
 	return hexoutput;
 
